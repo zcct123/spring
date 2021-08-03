@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Event raised when an {@code ApplicationContext} gets closed.
- *
+ *	事件在{@code ApplicationContext}被关闭时引发
  * @author Juergen Hoeller
  * @since 12.08.2003
  * @see ContextRefreshedEvent

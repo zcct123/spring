@@ -39,22 +39,22 @@ import org.springframework.lang.Nullable;
 public interface StartupStep {
 
 	/**
-	 * Return the name of the startup step.
-	 * <p>A step name describes the current action or phase. This technical
-	 * name should be "." namespaced and can be reused to describe other instances of
-	 * similar steps during application startup.
+	 * Return the name of the startup step.  返回启动步骤的名称
+	 * <p>A step name describes the current action or phase  步骤名描述当前操作或阶段 . This technical
+	 * name should be "." namespaced and can be reused to describe other instances of  名称应以“。”命名，并可重用以描述其他实例
+	 * similar steps during application startup. 在应用程序启动过程中类似的步骤
 	 */
 	String getName();
 
 	/**
-	 * Return the unique id for this step within the application startup.
+	 * Return the unique id for this step within the application startup. 在应用程序启动时返回此步骤的唯一id
 	 */
 	long getId();
 
 	/**
-	 * Return, if available, the id of the parent step.
-	 * <p>The parent step is the step that was started the most recently
-	 * when the current step was created.
+	 * Return, if available, the id of the parent step.  如果可用，返回父步骤的id
+	 * <p>The parent step is the step that was started the most recently 父步骤是最近启动的步骤
+	 * when the current step was created. 当创建当前步骤时
 	 */
 	@Nullable
 	Long getParentId();

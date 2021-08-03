@@ -25,14 +25,14 @@ import org.springframework.util.Assert;
 
 /**
  * Extension of the {@link org.springframework.beans.factory.support.GenericBeanDefinition}
- * class, adding support for annotation metadata exposed through the
+ * class, adding support for annotation metadata exposed through the  //类中公开的注释元数据的支持
  * {@link AnnotatedBeanDefinition} interface.
  *
  * <p>This GenericBeanDefinition variant is mainly useful for testing code that expects
- * to operate on an AnnotatedBeanDefinition, for example strategy implementations
- * in Spring's component scanning support (where the default definition class is
+ * to operate on an AnnotatedBeanDefinition, for example strategy implementations 操作AnnotatedBeanDefinition，例如策略实现
+ * in Spring's component scanning support (where the default definition class is  在Spring的组件扫描支持中(默认定义类所在的位置)
  * {@link org.springframework.context.annotation.ScannedGenericBeanDefinition},
- * which also implements the AnnotatedBeanDefinition interface).
+ * which also implements the AnnotatedBeanDefinition interface).  它也实现了AnnotatedBeanDefinition接口
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -49,12 +49,13 @@ public class AnnotatedGenericBeanDefinition extends GenericBeanDefinition implem
 	private MethodMetadata factoryMethodMetadata;
 
 
-	/**
+	/**  为给定的bean类创建一个新的AnnotatedGenericBeanDefinition
 	 * Create a new AnnotatedGenericBeanDefinition for the given bean class.
 	 * @param beanClass the loaded bean class
 	 */
 	public AnnotatedGenericBeanDefinition(Class<?> beanClass) {
 		setBeanClass(beanClass);
+						// AnnotationMetadata    注释元数据   introspect(反省 反思) 这一步使用工厂模式创建 AnnotationMetadata
 		this.metadata = AnnotationMetadata.introspect(beanClass);
 	}
 

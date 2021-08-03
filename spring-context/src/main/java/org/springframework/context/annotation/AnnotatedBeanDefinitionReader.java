@@ -35,9 +35,9 @@ import org.springframework.util.Assert;
 
 /**
  * Convenient adapter for programmatic registration of bean classes.
- *
- * <p>This is an alternative to {@link ClassPathBeanDefinitionScanner}, applying
- * the same resolution of annotations but for explicitly registered classes only.
+ *	用于编程注册bean类的方便适配器
+ * <p>这是一种替代 {@link ClassPathBeanDefinitionScanner}, applying
+ * 注释的解析与注释相同，但仅适用于显式注册的类.
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -234,16 +234,16 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param beanClass the class of the bean
-	 * @param name an explicit name for the bean
-	 * @param qualifiers specific qualifier annotations to consider, if any,
-	 * in addition to qualifiers at the bean class level
-	 * @param supplier a callback for creating an instance of the bean
+	 * 从给定的bean类注册一个bean，并从中派生它的元数据
+	 * class-declared annotations.  class-declared注释
+	 * @param beanClass the class of the bean  类对象
+	 * @param name an explicit name for the bean  名称
+	 * @param qualifiers specific qualifier annotations to consider, if any, 要考虑的特定限定符注释
+	 * in addition to qualifiers at the bean class level  除了bean类级别的限定符之外
+	 * @param supplier a callback for creating an instance of the bean  用于创建bean实例的回调
 	 * (may be {@code null})
-	 * @param customizers one or more callbacks for customizing the factory's
-	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag
+	 * @param customizers one or more callbacks for customizing the factory's 定制器一个或多个回调来定制工厂的
+	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag  设置lazy-init或主标志
 	 * @since 5.0
 	 */
 	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,

@@ -36,10 +36,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
 
 /**
- * A bean definition scanner that detects bean candidates on the classpath,
- * registering corresponding bean definitions with a given registry ({@code BeanFactory}
+ * 用于检测类路径上的候选bean的bean定义扫描程序,
+ * 将相应的bean定义注册到给定的注册中心 ({@code BeanFactory}
  * or {@code ApplicationContext}).
- *
+ *通过可配置的类型过滤器检测候选类。的
+ * *默认过滤器包括带有Spring注解的类
  * <p>Candidate classes are detected through configurable type filters. The
  * default filters include classes that are annotated with Spring's
  * {@link org.springframework.stereotype.Component @Component},

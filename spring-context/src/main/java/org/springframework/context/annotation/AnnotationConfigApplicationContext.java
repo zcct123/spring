@@ -34,11 +34,11 @@ import org.springframework.util.Assert;
  * {@link org.springframework.stereotype.Component @Component} types and JSR-330 compliant
  * classes using {@code javax.inject} annotations.
  *
- * <p>Allows for registering classes one by one using {@link #register(Class...)}
- * as well as for classpath scanning using {@link #scan(String...)}.
+ * <p>允许注册类一个一个使用 {@link #register(Class...)}
+ * 以及类路径扫描使用 {@link #scan(String...)}.
  *
- * <p>In case of multiple {@code @Configuration} classes, {@link Bean @Bean} methods
- * defined in later classes will override those defined in earlier classes. This can
+ * <p>在多重情况下 {@code @Configuration} classes, {@link Bean @Bean} methods
+ * 在后面的类中定义的会覆盖在前面的类中定义的。这可以
  * be leveraged to deliberately override certain bean definitions via an extra
  * {@code @Configuration} class.
  *
@@ -61,10 +61,11 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	/**
-	 * Create a new AnnotationConfigApplicationContext that needs to be populated
-	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
+	 * 创建一个新的需要填充的AnnotationConfigApplicationContext
+	 * 通过 {@ link# register} 调用，然后手动调用 {@linkplain #refresh refresh}。.
 	 */
 	public AnnotationConfigApplicationContext() {
+		// 记录第一步  应用程序启动标志   StartupStep
 		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		createAnnotatedBeanDefReader.end();
@@ -88,7 +89,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+		// 初始化  启动步骤记录 ，  注解的 AnnotatedBeanFefinitionReader 初始化  ClassPathBeanDefinitionScanner初始化
 		this();
+		// 注册一个或多个要处理的组件类  Configration 注解的类
 		register(componentClasses);
 		refresh();
 	}
@@ -152,7 +155,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	//---------------------------------------------------------------------
 
 	/**
-	 * Register one or more component classes to be processed.
+	 * ：注册一个或多个要处理的组件类.
 	 * <p>Note that {@link #refresh()} must be called in order for the context
 	 * to fully process the new classes.
 	 * @param componentClasses one or more component classes &mdash; for example,
@@ -162,7 +165,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	@Override
 	public void register(Class<?>... componentClasses) {
+		//org.springframework.util.Assert断言工具类  非空判断
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
+		//启动步骤
 		StartupStep registerComponentClass = this.getApplicationStartup().start("spring.context.component-classes.register")
 				.tag("classes", () -> Arrays.toString(componentClasses));
 		this.reader.register(componentClasses);

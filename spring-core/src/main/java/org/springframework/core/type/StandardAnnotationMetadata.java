@@ -33,7 +33,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils;
 
-/**
+/** 使用标准反射的实现
  * {@link AnnotationMetadata} implementation that uses standard reflection
  * to introspect a given {@link Class}.
  *
@@ -46,12 +46,12 @@ import org.springframework.util.ReflectionUtils;
  */
 public class StandardAnnotationMetadata extends StandardClassMetadata implements AnnotationMetadata {
 
-	private final MergedAnnotations mergedAnnotations;
+	private final MergedAnnotations mergedAnnotations;  // 合并注解
 
-	private final boolean nestedAnnotationsAsMap;
+	private final boolean nestedAnnotationsAsMap;  // 嵌套注解as map
 
 	@Nullable
-	private Set<String> annotationTypes;
+	private Set<String> annotationTypes;  //注解类型
 
 
 	/**
@@ -66,8 +66,8 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 	}
 
 	/**
-	 * Create a new {@link StandardAnnotationMetadata} wrapper for the given Class,
-	 * providing the option to return any nested annotations or annotation arrays in the
+	 * Create a new {@link StandardAnnotationMetadata} wrapper for the given Class, 给定类的包装器
+	 * providing the option to return any nested annotations or annotation arrays in the 属性中提供返回任何嵌套注释或注释数组的选项
 	 * form of {@link org.springframework.core.annotation.AnnotationAttributes} instead
 	 * of actual {@link Annotation} instances.
 	 * @param introspectedClass the Class to introspect

@@ -89,33 +89,33 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
- * interface. Doesn't mandate the type of storage used for configuration; simply
- * implements common context functionality. Uses the Template Method design pattern,
- * requiring concrete subclasses to implement abstract methods.
+ *  是{@link org.springframework.context.ApplicationContext} 的抽象实现
+ * interface. 不强制要求用于配置的存储类型; simply
+ * 实现公共上下文功能。使用模板方法设计模式   模板模式：定义一个操作中的算法的骨架，而将一些步骤延迟到子类中。模板方法使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤。
+ * 需要具体的子类来实现抽象方法.
  *
- * <p>In contrast to a plain BeanFactory, an ApplicationContext is supposed
- * to detect special beans defined in its internal bean factory:
- * Therefore, this class automatically registers
- * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors},
+ * <p>与普通BeanFactory不同, an ApplicationContext is supposed（设想）
+ * 要检测在其内部bean工厂中定义的特殊bean:
+ * 下面这些类 会自动注册
+ * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors},（Processors 处理器）
  * {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessors},
  * and {@link org.springframework.context.ApplicationListener ApplicationListeners}
- * which are defined as beans in the context.
+ * 哪些在Context中定义为bean.
  *
- * <p>A {@link org.springframework.context.MessageSource} may also be supplied
- * as a bean in the context, with the name "messageSource"; otherwise, message
- * resolution is delegated to the parent context. Furthermore, a multicaster
- * for application events can be supplied as an "applicationEventMulticaster" bean
+ * <p>A {@link org.springframework.context.MessageSource} 也可提供
+ * 作为Context中名称为“messageSource”的bean;否则,消息";
+ * 解析被委托给父上下文. 此外, a 广播
+ * ：用于应用程序的事件可以作为“applicationEventMulticaster”bean提供
  * of type {@link org.springframework.context.event.ApplicationEventMulticaster}
- * in the context; otherwise, a default multicaster of type
+ * 在context中; 其他方面, 默认的广播类型
  * {@link org.springframework.context.event.SimpleApplicationEventMulticaster} will be used.
  *
- * <p>Implements resource loading by extending
+ * <p>通过扩展实现资源加载
  * {@link org.springframework.core.io.DefaultResourceLoader}.
- * Consequently treats non-URL resource paths as class path resources
- * (supporting full class path resource names that include the package path,
- * e.g. "mypackage/myresource.dat"), unless the {@link #getResourceByPath}
- * method is overridden in a subclass.
+ * 将非url资源路径视为类路径资源
+ * (支持包含包路径的完整类路径资源名,
+ * e.g. "mypackage/myresource.dat"), 除……之外 the {@link #getResourceByPath}
+ * 方法在子类中重写.
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -133,27 +133,37 @@ import org.springframework.util.ReflectionUtils;
  * @see org.springframework.context.ApplicationListener
  * @see org.springframework.context.MessageSource
  */
+
+/**
+  * AbstractApplicationContext是Spring应用上下文中最重要的一个类，
+ * 这个抽象类中提供了几乎ApplicationContext的所有操作。
+ * 主要有容器工厂的处理，
+ * 1.事件的发送广播，
+ * 2.监听器添加，
+ * 3.容器初始化操作refresh方法，
+ * 4.然后就是bean的生成获取方法接口等。
+  */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 
 	/**
-	 * Name of the MessageSource bean in the factory.
-	 * If none is supplied, message resolution is delegated to the parent.
+	 * 工厂中的MessageSource bean的名称.
+	 * 如果没有提供，则将消息解析委托给父节点.
 	 * @see MessageSource
 	 */
 	public static final String MESSAGE_SOURCE_BEAN_NAME = "messageSource";
 
 	/**
-	 * Name of the LifecycleProcessor bean in the factory.
-	 * If none is supplied, a DefaultLifecycleProcessor is used.
+	 * 工厂中的  LifecycleProcessor （生命周期处理器）bean的名称.
+	 * 如果没有提供，则使用DefaultLifecycleProcessor.
 	 * @see org.springframework.context.LifecycleProcessor
 	 * @see org.springframework.context.support.DefaultLifecycleProcessor
 	 */
 	public static final String LIFECYCLE_PROCESSOR_BEAN_NAME = "lifecycleProcessor";
 
 	/**
-	 * Name of the ApplicationEventMulticaster bean in the factory.
-	 * If none is supplied, a default SimpleApplicationEventMulticaster is used.
+	 * 工厂中的 ApplicationEventMulticaster （事件广播）bean的名称.
+	 * 如果没有提供，则使用默认的 SimpleApplicationEventMulticaster
 	 * @see org.springframework.context.event.ApplicationEventMulticaster
 	 * @see org.springframework.context.event.SimpleApplicationEventMulticaster
 	 */
@@ -164,91 +174,98 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * ignore SpEL, i.e. to not initialize the SpEL infrastructure.
 	 * <p>The default is "false".
 	 */
+	/**
+	 *由{@code spring.spel. spel控制的Boolean标志。ignore}系统属性，它指示Spring
+	 *忽略SpEL，即不初始化SpEL基础设施。
+	 *
+	 *默认为“false”
+	 */
 	private static final boolean shouldIgnoreSpel = SpringProperties.getFlag("spring.spel.ignore");
 
 
 	static {
-		// Eagerly load the ContextClosedEvent class to avoid weird classloader issues
+		// 急切加载ContextClosedEvent类以避免奇怪的类加载器问题
 		// on application shutdown in WebLogic 8.1. (Reported by Dustin Woods.)
-		ContextClosedEvent.class.getName();
+		// 事件在{@code ApplicationContext}被关闭时引发
+		ContextClosedEvent.class.getName();   // 获取这个类的全类名   //TODO 这是什么意思
 	}
 
 
-	/** Logger used by this class. Available to subclasses. */
+	/** 该类使用的记录器。可以使用子类. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Unique id for this context, if any. */
+	/** 此上下文的唯一id(如果有的话). */
 	private String id = ObjectUtils.identityToString(this);
 
-	/** Display name. */
+	/** 显示名称. */
 	private String displayName = ObjectUtils.identityToString(this);
 
 	/** Parent context. */
 	@Nullable
 	private ApplicationContext parent;
 
-	/** Environment used by this context. */
+	/** Environment used by this context. 此上下文使用的环境 */
 	@Nullable
 	private ConfigurableEnvironment environment;
 
-	/** BeanFactoryPostProcessors to apply on refresh. */
+	/** BeanFactoryPostProcessors to apply on refresh. 刷新时应用的BeanFactoryPostProcessors */
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
-	/** System time in milliseconds when this context started. */
+	/** System time in milliseconds when this context started. 此上下文启动时的系统时间(以毫秒为单位) */
 	private long startupDate;
 
-	/** Flag that indicates whether this context is currently active. */
+	/** Flag that indicates whether this context is currently active. 指示此上下文当前是否处于活动状态的标志 */
 	private final AtomicBoolean active = new AtomicBoolean();
 
-	/** Flag that indicates whether this context has been closed already. */
+	/** Flag that indicates whether this context has been closed already. 指示此上下文是否已关闭的标志 */
 	private final AtomicBoolean closed = new AtomicBoolean();
 
-	/** Synchronization monitor for the "refresh" and "destroy". */
+	/** Synchronization monitor for the "refresh" and "destroy".  用于“刷新”和“销毁”的同步监视器 */
 	private final Object startupShutdownMonitor = new Object();
 
-	/** Reference to the JVM shutdown hook, if registered. */
+	/** Reference to the JVM shutdown hook, if registered. 如果已注册，则引用JVM关闭钩子。 */
 	@Nullable
 	private Thread shutdownHook;
 
-	/** ResourcePatternResolver used by this context. */
+	/** ResourcePatternResolver used by this context.  此上下文使用的ResourcePatternResolver*/
 	private ResourcePatternResolver resourcePatternResolver;
 
-	/** LifecycleProcessor for managing the lifecycle of beans within this context. */
+	/** LifecycleProcessor for managing the lifecycle of beans within this context.  用于管理此上下文中bean的生命周期的LifecycleProcessor*/
 	@Nullable
 	private LifecycleProcessor lifecycleProcessor;
 
-	/** MessageSource we delegate our implementation of this interface to. */
+	/** MessageSource we delegate our implementation of this interface to. 我们将这个接口的实现委托给MessageSource */
 	@Nullable
 	private MessageSource messageSource;
 
-	/** Helper class used in event publishing. */
+	/** Helper class used in event publishing.  Helper class used in event publishing */
 	@Nullable
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
-	/** Application startup metrics. **/
+	/** Application startup metrics.  应用程序启动标志 **/
 	private ApplicationStartup applicationStartup = ApplicationStartup.DEFAULT;
 
-	/** Statically specified listeners. */
+	/** Statically specified listeners.  静态指定侦听器*/
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
-	/** Local listeners registered before refresh. */
+	/** Local listeners registered before refresh. ：刷新前已注册本地侦听器 */
 	@Nullable
 	private Set<ApplicationListener<?>> earlyApplicationListeners;
 
-	/** ApplicationEvents published before the multicaster setup. */
+	/** ApplicationEvents published before the multicaster setup.  在广播设置之前发布的ApplicationEvents*/
 	@Nullable
 	private Set<ApplicationEvent> earlyApplicationEvents;
 
 
 	/**
-	 * Create a new AbstractApplicationContext with no parent.
+	 * Create a new AbstractApplicationContext with no parent. 创建一个没有父类的新的AbstractApplicationContext
 	 */
 	public AbstractApplicationContext() {
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
 	/**
-	 * Create a new AbstractApplicationContext with the given parent context.
+	 * Create a new AbstractApplicationContext with the given parent context. 使用给定的父上下文创建新的AbstractApplicationContext
 	 * @param parent the parent context
 	 */
 	public AbstractApplicationContext(@Nullable ApplicationContext parent) {
@@ -258,13 +275,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	//---------------------------------------------------------------------
-	// Implementation of ApplicationContext interface
+	// Implementation of ApplicationContext interface  ApplicationContext接口的实现
 	//---------------------------------------------------------------------
 
 	/**
-	 * Set the unique id of this application context.
-	 * <p>Default is the object id of the context instance, or the name
-	 * of the context bean if the context is itself defined as a bean.
+	 * Set the unique id of this application context.  设置此应用程序上下文的唯一id。
+	 * <p>Default is the object id of the context instance, or the name  Default是上下文实例的对象id或名称
+	 * of the context bean if the context is itself defined as a bean. 如果上下文本身被定义为bean，则上下文bean的
 	 * @param id the unique id of the context
 	 */
 	@Override
