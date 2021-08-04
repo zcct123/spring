@@ -17,9 +17,7 @@
 package org.springframework.beans.factory.annotation;
 
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.MethodMetadata;
-import org.springframework.core.type.StandardAnnotationMetadata;
+import org.springframework.core.type.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -56,6 +54,7 @@ public class AnnotatedGenericBeanDefinition extends GenericBeanDefinition implem
 	public AnnotatedGenericBeanDefinition(Class<?> beanClass) {
 		setBeanClass(beanClass);
 						// AnnotationMetadata    注释元数据   introspect(反省 反思) 这一步使用工厂模式创建 AnnotationMetadata
+		//  AnnotatedTypeMetadata  对注解元素的封装适配    保存类和注解的基本信息
 		this.metadata = AnnotationMetadata.introspect(beanClass);
 	}
 

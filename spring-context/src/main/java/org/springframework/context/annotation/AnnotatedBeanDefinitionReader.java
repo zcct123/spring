@@ -134,12 +134,14 @@ public class AnnotatedBeanDefinitionReader {
 	 */
 	public void register(Class<?>... componentClasses) {
 		for (Class<?> componentClass : componentClasses) {
+			// 循环注册
 			registerBean(componentClass);
 		}
 	}
 
 	/**
 	 * Register a bean from the given bean class, deriving its metadata from
+	 * 从给定的bean类注册一个bean，并从中派生它的元数据
 	 * class-declared annotations.
 	 * @param beanClass the class of the bean
 	 */
@@ -249,8 +251,14 @@ public class AnnotatedBeanDefinitionReader {
 	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
-
+		// 初始化一个beanDefinition   包括bean的元注解  类信息    extends GenericBeanDefinition implements AnnotatedBeanDefinition
+		//GenericBeanDefinition 与任何bean定义一样，它允许任意指定类+
+		//*构造函数参数值和属性值。另外，由a派生而来
+		//*父bean定义可以通过“parentName”属性灵活配置。
+		//  AnnotatedBeanDefinition 提供了 beanDefinition 基本方法
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
+
+		//
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}

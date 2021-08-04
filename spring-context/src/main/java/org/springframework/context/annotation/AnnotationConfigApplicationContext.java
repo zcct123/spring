@@ -67,8 +67,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		// 记录第一步  应用程序启动标志   StartupStep
 		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
+		// 初始化bean 的适配器
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		createAnnotatedBeanDefReader.end();
+		// 初始化bean 的扫描类
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -91,7 +93,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		// 初始化  启动步骤记录 ，  注解的 AnnotatedBeanFefinitionReader 初始化  ClassPathBeanDefinitionScanner初始化
 		this();
-		// 注册一个或多个要处理的组件类  Configration 注解的类
+		// 注册一个或多个要处理的组件类  Configration注解的类
 		register(componentClasses);
 		refresh();
 	}
@@ -170,6 +172,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		//启动步骤
 		StartupStep registerComponentClass = this.getApplicationStartup().start("spring.context.component-classes.register")
 				.tag("classes", () -> Arrays.toString(componentClasses));
+		// 使用bean适配器这侧bean
 		this.reader.register(componentClasses);
 		registerComponentClass.end();
 	}
