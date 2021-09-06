@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-/**
+/**提供对通常获得的合并注释集合的访问
  * Provides access to a collection of merged annotations, usually obtained
  * from a source such as a {@link Class} or {@link Method}.
  *
@@ -317,16 +317,16 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * Create a new {@link MergedAnnotations} instance containing all
 	 * annotations and meta-annotations from the specified element and,
 	 * depending on the {@link SearchStrategy}, related inherited elements.
-	 * @param element the source element
-	 * @param searchStrategy the search strategy to use
-	 * @param repeatableContainers the repeatable containers that may be used by
+	 * @param element the source element  源元素
+	 * @param searchStrategy the search strategy to use  使用的搜索策略
+	 * @param repeatableContainers the repeatable containers that may be used by  可重复使用的容器
 	 * the element annotations or the meta-annotations
-	 * @return a {@link MergedAnnotations} instance containing the merged
+	 * @return a {@link MergedAnnotations} instance containing the merged  实例包含合并的元素注释
 	 * element annotations
 	 */
 	static MergedAnnotations from(AnnotatedElement element, SearchStrategy searchStrategy,
 			RepeatableContainers repeatableContainers) {
-
+		// 真正创建  MergedAnnotations 实例的过程
 		return from(element, searchStrategy, repeatableContainers, AnnotationFilter.PLAIN);
 	}
 
@@ -334,13 +334,14 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * Create a new {@link MergedAnnotations} instance containing all
 	 * annotations and meta-annotations from the specified element and, 指定元素的注释和元注释，
 	 * depending on the {@link SearchStrategy}, related inherited elements.
-	 * @param element the source element
-	 * @param searchStrategy the search strategy to use
-	 * @param repeatableContainers the repeatable containers that may be used by
+	 * @param element the source element  源元素
+	 * @param searchStrategy the search strategy to use  使用的搜索策略
+	 * @param repeatableContainers the repeatable containers that may be used by  可重复使用的容器
 	 * the element annotations or the meta-annotations
-	 * @param annotationFilter an annotation filter used to restrict the
+	 * @param annotationFilter an annotation filter used to restrict the用于限制的注释筛选器注释被认为
 	 * annotations considered
-	 * @return a {@link MergedAnnotations} instance containing the merged
+	 *                         实例，该实例包含包含所提供元素的合并表示法的合并实例
+	 * @return a {@link MergedAnnotations} instance containing the merged  instance containing the mergedannotations for the supplied element
 	 * annotations for the supplied element
 	 */
 	static MergedAnnotations from(AnnotatedElement element, SearchStrategy searchStrategy,
@@ -442,14 +443,14 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 */
 	enum SearchStrategy {
 
-		/**
+		/**只查找直接声明的注释，不考虑
 		 * Find only directly declared annotations, without considering
 		 * {@link Inherited @Inherited} annotations and without searching
 		 * superclasses or implemented interfaces.
 		 */
 		DIRECT,
 
-		/**
+		/**找到所有直接声明的注释以及任何注释
 		 * Find all directly declared annotations as well as any
 		 * {@link Inherited @Inherited} superclass annotations. This strategy
 		 * is only really useful when used with {@link Class} types since the
@@ -460,28 +461,28 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		INHERITED_ANNOTATIONS,
 
 		/**
-		 * Find all directly declared and superclass annotations. This strategy
-		 * is similar to {@link #INHERITED_ANNOTATIONS} except the annotations
-		 * do not need to be meta-annotated with {@link Inherited @Inherited}.
-		 * This strategy does not search implemented interfaces.
+		 查找所有直接声明的和超类的注释。这个策略
+		 *类似于{@link #INHERITED_ANNOTATIONS}，除了注释
+		 *不需要用{@link Inherited @Inherited}进行元注释。
+		 *此策略不搜索实现的接口。
 		 */
 		SUPERCLASS,
 
 		/**
-		 * Perform a full search of the entire type hierarchy, including
-		 * superclasses and implemented interfaces. Superclass annotations do
-		 * not need to be meta-annotated with {@link Inherited @Inherited}.
+		 *执行整个类型层次结构的完整搜索，包括
+		 *超类和实现的接口。超类注释做
+		 *不需要用{@link Inherited @Inherited}进行元注释
 		 */
 		TYPE_HIERARCHY,
 
 		/**
-		 * Perform a full search of the entire type hierarchy on the source
-		 * <em>and</em> any enclosing classes. This strategy is similar to
+		 在源上执行整个类型层次结构的完整搜索
+		 * 和任何封闭类。这种策略类似于
 		 * {@link #TYPE_HIERARCHY} except that {@linkplain Class#getEnclosingClass()
-		 * enclosing classes} are also searched. Superclass annotations do not
-		 * need to be meta-annotated with {@link Inherited @Inherited}. When
-		 * searching a {@link Method} source, this strategy is identical to
-		 * {@link #TYPE_HIERARCHY}.
+		 *封闭类}也会被搜索。超类注释则不然
+		 *需要用{@link Inherited @Inherited}进行元注释。当
+		 *搜索{@link Method}源时，此策略与
+		 * {@link # TYPE_HIERARCHY}。
 		 */
 		TYPE_HIERARCHY_AND_ENCLOSING_CLASSES
 	}

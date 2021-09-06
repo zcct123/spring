@@ -46,7 +46,7 @@ import org.springframework.util.ReflectionUtils;
  */
 public class StandardAnnotationMetadata extends StandardClassMetadata implements AnnotationMetadata {
 
-	private final MergedAnnotations mergedAnnotations;  // 合并注解
+	private final MergedAnnotations mergedAnnotations;  // 合并注解   提供对通常获得的合并注释集合的访问
 
 	private final boolean nestedAnnotationsAsMap;  // 嵌套注解as map
 
@@ -70,8 +70,8 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 	 * providing the option to return any nested annotations or annotation arrays in the 属性中提供返回任何嵌套注释或注释数组的选项
 	 * form of {@link org.springframework.core.annotation.AnnotationAttributes} instead
 	 * of actual {@link Annotation} instances.
-	 * @param introspectedClass the Class to introspect
-	 * @param nestedAnnotationsAsMap return nested annotations and annotation arrays as
+	 * @param introspectedClass the Class to introspect  要内省的类
+	 * @param nestedAnnotationsAsMap return nested annotations and annotation arrays as 返回嵌套的注释和注释数组
 	 * {@link org.springframework.core.annotation.AnnotationAttributes} for compatibility
 	 * with ASM-based {@link AnnotationMetadata} implementations
 	 * @since 3.1.1
@@ -82,6 +82,7 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 	 */
 	@Deprecated
 	public StandardAnnotationMetadata(Class<?> introspectedClass, boolean nestedAnnotationsAsMap) {
+		// super 做了非空判断 和 保存 类对象
 		super(introspectedClass);
 		this.mergedAnnotations = MergedAnnotations.from(introspectedClass,
 				SearchStrategy.INHERITED_ANNOTATIONS, RepeatableContainers.none());

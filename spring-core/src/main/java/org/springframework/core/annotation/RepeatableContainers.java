@@ -28,10 +28,10 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Strategy used to determine annotations that act as containers for other
- * annotations. The {@link #standardRepeatables()} method provides a default
- * strategy that respects Java's {@link Repeatable @Repeatable} support and
- * should be suitable for most situations.
+ 用于确定作为容器的其他注释的策略
+ *注释。{@link # standardrepeatable()}方法提供了一个默认值
+ *策略，尊重Java的{@link Repeatable @Repeatable}支持
+ *应该适用于大多数情况。
  *
  * <p>The {@link #of} method can be used to register relationships for
  * annotations that do not wish to use {@link Repeatable @Repeatable}.
@@ -118,8 +118,8 @@ public abstract class RepeatableContainers {
 	}
 
 	/**
-	 * Create a {@link RepeatableContainers} instance that does not expand any
-	 * repeatable annotations.
+	 *创建一个{@link RepeatableContainers}实例，它不扩展任何
+	 * 可重复的注释
 	 * @return a {@link RepeatableContainers} instance
 	 */
 	public static RepeatableContainers none() {
