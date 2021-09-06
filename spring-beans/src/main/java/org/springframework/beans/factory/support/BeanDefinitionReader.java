@@ -22,16 +22,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.lang.Nullable;
 
 /**
- * Simple interface for bean definition readers.
- * Specifies load methods with Resource and String location parameters.
- *
- * <p>Concrete bean definition readers can of course add additional
- * load and register methods for bean definitions, specific to
- * their bean definition format.
- *
- * <p>Note that a bean definition reader does not have to implement
- * this interface. It only serves as suggestion for bean definition
- * readers that want to follow standard naming conventions.
+ * bean 定义阅读器的简单界面。
+ * 使用 Resource 和 String 位置参数指定加载方法。
+ * <p>具体的 bean 定义读者当然可以为 bean 定义添加额外的加载和注册方法，特定于他们的 bean 定义格式。
+ * <p>请注意，bean 定义阅读器不必实现此接口。它仅作为想要遵循标准命名约定的 bean 定义读者的建议。
  *
  * @author Juergen Hoeller
  * @since 1.1
@@ -40,9 +34,9 @@ import org.springframework.lang.Nullable;
 public interface BeanDefinitionReader {
 
 	/**
-	 * Return the bean factory to register the bean definitions with.
-	 * <p>The factory is exposed through the BeanDefinitionRegistry interface,
-	 * encapsulating the methods that are relevant for bean definition handling.
+	 * 返回 bean 工厂以注册 bean 定义。
+	 * <p>工厂通过 BeanDefinitionRegistry 接口公开
+	 * ，封装了与 bean 定义处理相关的方法。
 	 */
 	BeanDefinitionRegistry getRegistry();
 

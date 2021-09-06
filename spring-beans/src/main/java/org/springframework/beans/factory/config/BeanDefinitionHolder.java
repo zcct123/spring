@@ -59,8 +59,8 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 	/**
 	 * Create a new BeanDefinitionHolder.
 	 * @param beanDefinition the BeanDefinition to wrap
-	 * @param beanName the name of the bean, as specified for the bean definition
-	 * @param aliases alias names for the bean, or {@code null} if none
+	 * @param beanName the name of the bean, as specified for the bean definition  为 bean 定义指定的 bean 的名称
+	 * @param aliases alias names for the bean, or {@code null} if none  bean      的别名
 	 */
 	public BeanDefinitionHolder(BeanDefinition beanDefinition, String beanName, @Nullable String[] aliases) {
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");

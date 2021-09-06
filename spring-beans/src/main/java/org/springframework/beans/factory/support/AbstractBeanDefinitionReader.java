@@ -35,7 +35,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Abstract base class for bean definition readers which implement
+ *实现的 bean 定义读取器的抽象基类
  * the {@link BeanDefinitionReader} interface.
  *
  * <p>Provides common properties like the bean factory to work on

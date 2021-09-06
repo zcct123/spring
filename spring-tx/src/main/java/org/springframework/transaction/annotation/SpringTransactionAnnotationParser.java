@@ -34,7 +34,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Strategy implementation for parsing Spring's {@link Transactional} annotation.
+ * 解析Spring的{@link Transactional}注解的策略实现.
  *
  * @author Juergen Hoeller
  * @author Mark Paluch

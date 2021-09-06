@@ -48,12 +48,16 @@ import org.springframework.util.Assert;
  */
 public class AnnotatedBeanDefinitionReader {
 
+	  //  保存 beanDefinition 信息
 	private final BeanDefinitionRegistry registry;
 
+	 // 策略模式  用于生成 beanName
 	private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
 
+	 // 注释范围元数据解析器   检查  bean  上的注解
 	private ScopeMetadataResolver scopeMetadataResolver = new AnnotationScopeMetadataResolver();
 
+	// 用于评估 {@link Conditional} 注释的内部类
 	private ConditionEvaluator conditionEvaluator;
 
 
@@ -246,10 +250,12 @@ public class AnnotatedBeanDefinitionReader {
 	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag  设置lazy-init或主标志
 	 * @since 5.0
 	 */
+
+	//  注册 beanDefination 到 BeanDefinitionRegistry
 	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
-
+		// 给创建的bean 创建BeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
@@ -261,6 +267,8 @@ public class AnnotatedBeanDefinitionReader {
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+
+		// 增加是否为 Primary  Lazy 注解   Qualifier信息
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
@@ -279,8 +287,10 @@ public class AnnotatedBeanDefinitionReader {
 				customizer.customize(abd);
 			}
 		}
-
+		// 带有名称和别名的 BeanDefinition 的持有者。可以注册为内部 bean 的占位符
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+
+		// 判断是否为 代理对象bean
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}

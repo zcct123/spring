@@ -19,7 +19,7 @@ package org.springframework.beans.factory.support;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
- * Strategy interface for generating bean names for bean definitions.
+ * 为 bean 定义生成 bean 名称的策略接口.
  *
  * @author Juergen Hoeller
  * @since 2.0.3
@@ -27,7 +27,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 public interface BeanNameGenerator {
 
 	/**
-	 * Generate a bean name for the given bean definition.
+	 * 为给定的 bean 定义生成一个 bean 名称.
 	 * @param definition the bean definition to generate a name for
 	 * @param registry the bean definition registry that the given definition
 	 * is supposed to be registered with

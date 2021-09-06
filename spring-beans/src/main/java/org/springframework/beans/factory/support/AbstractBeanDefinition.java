@@ -1109,7 +1109,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Validate this bean definition.
+	 * 验证这个 bean 定义.
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
 	public void validate() throws BeanDefinitionValidationException {
@@ -1128,6 +1128,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Checks for existence of a method with the specified name.
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
+	// 验证并准备为此 bean 定义的方法覆盖   检查具有指定名称的方法是否存在
 	public void prepareMethodOverrides() throws BeanDefinitionValidationException {
 		// Check that lookup methods exist and determine their overloaded status.
 		if (hasMethodOverrides()) {

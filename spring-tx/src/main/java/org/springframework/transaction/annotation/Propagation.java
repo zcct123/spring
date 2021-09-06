@@ -34,6 +34,7 @@ public enum Propagation {
 	 * Analogous to EJB transaction attribute of the same name.
 	 * <p>This is the default setting of a transaction annotation.
 	 */
+	// 支持当前事务，如果不存在则创建一个新事务。类似于同名的 EJB 事务属性。 <p>这是交易注释的默认设置。
 	REQUIRED(TransactionDefinition.PROPAGATION_REQUIRED),
 
 	/**
@@ -53,6 +54,8 @@ public enum Propagation {
 	 * Support a current transaction, throw an exception if none exists.
 	 * Analogous to EJB transaction attribute of the same name.
 	 */
+
+	//支持当前事务，如果不存在则抛出异常
 	MANDATORY(TransactionDefinition.PROPAGATION_MANDATORY),
 
 	/**
@@ -83,6 +86,7 @@ public enum Propagation {
 	 * Execute non-transactionally, throw an exception if a transaction exists.
 	 * Analogous to EJB transaction attribute of the same name.
 	 */
+	// 以非事务方式执行，如果存在事务则抛出异常。类似于 EJB 的同名事务属性
 	NEVER(TransactionDefinition.PROPAGATION_NEVER),
 
 	/**

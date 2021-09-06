@@ -117,10 +117,16 @@ import org.springframework.util.StringUtils;
  * @see #getBean
  * @see #resolveDependency
  */
+
+/**
+ *  是一个纯粹的 ioc 容器    extends   BeanDefinitionRegistry
+ *  用于保存 beanDefination 的基本信息  和 初始化 bean 的一些配置信息
+ */
 @SuppressWarnings("serial")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
 		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
 
+	// javax 注入提供者类
 	@Nullable
 	private static Class<?> javaxInjectProviderClass;
 
@@ -136,49 +142,49 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 
-	/** Map from serialized id to factory instance. */
+	/** 从序列化 id 到工厂实例的映射  */
 	private static final Map<String, Reference<DefaultListableBeanFactory>> serializableFactories =
 			new ConcurrentHashMap<>(8);
 
-	/** Optional id for this factory, for serialization purposes. */
+	/** 此工厂的可选 ID，用于序列化目的. */
 	@Nullable
 	private String serializationId;
 
-	/** Whether to allow re-registration of a different definition with the same name. */
+	/** 是否允许重新注册具有相同名称的不同定义. */
 	private boolean allowBeanDefinitionOverriding = true;
 
-	/** Whether to allow eager class loading even for lazy-init beans. */
+	/** 即使对于lazy-init bean，是否也允许加载急切类. */
 	private boolean allowEagerClassLoading = true;
 
-	/** Optional OrderComparator for dependency Lists and arrays. */
+	/** 依赖列表和数组的可选 OrderComparator. */
 	@Nullable
 	private Comparator<Object> dependencyComparator;
 
-	/** Resolver to use for checking if a bean definition is an autowire candidate. */
+	/** 用于检查 bean 定义是否是自动装配候选者的解析器. */
 	private AutowireCandidateResolver autowireCandidateResolver = SimpleAutowireCandidateResolver.INSTANCE;
 
-	/** Map from dependency type to corresponding autowired value. */
+	/** 从依赖类型映射到相应的自动装配值. */
 	private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
 
-	/** Map of bean definition objects, keyed by bean name. */
+	/** bean 定义对象的映射，以 bean 名称为键. */
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
-	/** Map from bean name to merged BeanDefinitionHolder. */
+	/** 从 bean 名称映射到合并的 BeanDefinitionHolder. */
 	private final Map<String, BeanDefinitionHolder> mergedBeanDefinitionHolders = new ConcurrentHashMap<>(256);
 
-	/** Map of singleton and non-singleton bean names, keyed by dependency type. */
+	/** 单例和非单例 bean 名称的映射，以依赖类型为键. */
 	private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
-	/** Map of singleton-only bean names, keyed by dependency type. */
+	/** 单例 bean 名称映射，以依赖类型为键. */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
-	/** List of bean definition names, in registration order. */
+	/** bean 定义名称列表，按注册顺序排列.  用于便利循环初始化 */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
-	/** List of names of manually registered singletons, in registration order. */
+	/** 手动注册的SingletonNames，按注册顺序排列. */
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
-	/** Cached array of bean definition names in case of frozen configuration. */
+	/** 在冻结配置的情况下缓存的 bean 定义名称数组. */
 	@Nullable
 	private volatile String[] frozenBeanDefinitionNames;
 
@@ -776,6 +782,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of ConfigurableListableBeanFactory interface
 	//---------------------------------------------------------------------
 
+	//ConfigurableListableBeanFactory 接口的实现
 	@Override
 	public void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue) {
 		Assert.notNull(dependencyType, "Dependency type must not be null");
@@ -913,15 +920,19 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			logger.trace("Pre-instantiating singletons in " + this);
 		}
 
-		// Iterate over a copy to allow for init methods which in turn register new bean definitions.
-		// While this may not be part of the regular factory bootstrap, it does otherwise work fine.
+		// 迭代一个副本以允许 init 方法依次注册新的 bean 定义.
+		// beanDefinitionNames 按注册顺序排列的一个 beanDefinition集合
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
-		// Trigger initialization of all non-lazy singleton beans...
+		// 循环 实例化非懒加载的 bean...
 		for (String beanName : beanNames) {
+			// 获取bean的基本信息
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			// 过滤非抽象的 而且 不是懒加载的bean
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+				//
 				if (isFactoryBean(beanName)) {
+					// 实例化bean
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof FactoryBean) {
 						FactoryBean<?> factory = (FactoryBean<?>) bean;
@@ -946,7 +957,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 
-		// Trigger post-initialization callback for all applicable beans...
+		// 为所有适用的 bean 触发初始化后回调...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
 			if (singletonInstance instanceof SmartInitializingSingleton) {
@@ -981,6 +992,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
+				// 验证这个 bean 定义
 				((AbstractBeanDefinition) beanDefinition).validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -1019,8 +1031,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+			// 检查这个工厂的bean创建阶段是否已经开始
 			if (hasBeanCreationStarted()) {
-				// Cannot modify startup-time collection elements anymore (for stable iteration)
+				// Cannot modify startup-time collection elements anymore (for stable iteration)  不能再修改启动时集合元素（为了稳定迭代）
 				synchronized (this.beanDefinitionMap) {
 					this.beanDefinitionMap.put(beanName, beanDefinition);
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
@@ -1031,8 +1044,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
-				// Still in startup registration phase
+				// bean工厂仍处于启动注册阶段  put 到map中
 				this.beanDefinitionMap.put(beanName, beanDefinition);
+				// bean 定义名称列表，按注册顺序排列
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
 			}
@@ -1160,6 +1174,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	/**
 	 * Update the factory's internal set of manual singleton names.
+	 * 更新工厂内部的手动单例名称集
 	 * @param action the modification action
 	 * @param condition a precondition for the modification action
 	 * (if this condition does not apply, the action can be skipped)
@@ -1167,6 +1182,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private void updateManualSingletonNames(Consumer<Set<String>> action, Predicate<Set<String>> condition) {
 		if (hasBeanCreationStarted()) {
 			// Cannot modify startup-time collection elements anymore (for stable iteration)
+			// 不能再修改启动时集合元素（为了稳定迭代
 			synchronized (this.beanDefinitionMap) {
 				if (condition.test(this.manualSingletonNames)) {
 					Set<String> updatedSingletons = new LinkedHashSet<>(this.manualSingletonNames);
@@ -1176,7 +1192,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 		else {
-			// Still in startup registration phase
+			// 仍处于启动注册阶段
 			if (condition.test(this.manualSingletonNames)) {
 				action.accept(this.manualSingletonNames);
 			}

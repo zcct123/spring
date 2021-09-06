@@ -1,23 +1,25 @@
-package main;
+package zclvct.spring.wirteSpring;
 
-import Config.AppConfig;
-import common.MyStartupStep;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.UserService;
+import zclvct.spring.Config.AppConfig;
+import zclvct.spring.common.MyStartupStep;
+import zclvct.spring.service.UserService;
+
+import java.util.Arrays;
 
 /**
- * @description:
- * @projectName:spring
- * @see:main
- * @author:赵冲
- * @createTime:2021/8/3 12:26
- * @version:1.0
+ * @author zhaochong
+ * @version 1.0
+ * @description: TODO
+ * @date 2021/8/7 15:17
  */
-public class Main {
+public class test {
 	public static void main(String[] args) {
+		// 创建spring容器
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		applicationContext.setApplicationStartup(new MyStartupStep());
+
 		UserService userService = (UserService)applicationContext.getBean("userService");
 		userService.test();
+
 	}
 }

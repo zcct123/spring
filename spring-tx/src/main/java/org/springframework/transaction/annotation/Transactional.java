@@ -77,7 +77,7 @@ public @interface Transactional {
 
 	/**
 	 * Alias for {@link #transactionManager}.
-	 * @see #transactionManager
+	 * @see #事务管理器
 	 */
 	@AliasFor("transactionManager")
 	String value() default "";

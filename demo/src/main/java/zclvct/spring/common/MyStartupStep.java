@@ -1,4 +1,4 @@
-package common;
+package zclvct.spring.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +70,7 @@ public class MyStartupStep implements ApplicationStartup {
 		}
 
 
-		static class DefaultTags implements StartupStep.Tags {
+		static class DefaultTags implements Tags {
 
 			@Override
 			public Iterator<Tag> iterator() {

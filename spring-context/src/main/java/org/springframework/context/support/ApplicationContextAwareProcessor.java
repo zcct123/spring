@@ -44,10 +44,11 @@ import org.springframework.util.StringValueResolver;
  *
  * <p>Implemented interfaces are satisfied in the order in which they are
  * mentioned above.
+ * 已实现的接口按照上面提到的顺序得到满足
  *
  * <p>Application contexts will automatically register this with their
  * underlying bean factory. Applications do not use this directly.
- *
+ *  应用程序上下文将自动将其注册到其底层 bean 工厂。应用程序不直接使用它
  * @author Juergen Hoeller
  * @author Costin Leau
  * @author Chris Beams
@@ -68,7 +69,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
 
 	/**
-	 * Create a new ApplicationContextAwareProcessor for the given context.
+	 * 给定的上下文创建一个新的 ApplicationContextAwareProcessor.
 	 */
 	public ApplicationContextAwareProcessor(ConfigurableApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;

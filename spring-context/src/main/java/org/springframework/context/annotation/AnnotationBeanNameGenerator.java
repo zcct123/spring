@@ -75,6 +75,8 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	private final Map<String, Set<String>> metaAnnotationTypesCache = new ConcurrentHashMap<>();
 
 
+
+	// 生成bean name
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		if (definition instanceof AnnotatedBeanDefinition) {
@@ -89,7 +91,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
-	 * Derive a bean name from one of the annotations on the class.
+	 * 从类上的注释之一派生一个 bean 名称.
 	 * @param annotatedDef the annotation-aware bean definition
 	 * @return the bean name, or {@code null} if none is found
 	 */
@@ -124,6 +126,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
+	 * 检查给定的注解是否是允许通过其注解建议组件名称的构造型 {@code value()
 	 * Check whether the given annotation is a stereotype that is allowed
 	 * to suggest a component name through its annotation {@code value()}.
 	 * @param annotationType the name of the annotation class to check

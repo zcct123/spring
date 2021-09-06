@@ -77,7 +77,7 @@ public class StandardEnvironment extends AbstractEnvironment {
 
 
 	/**
-	 * Customize the set of property sources with those appropriate for any standard
+	 * 使用适合任何标准的属性源自定义一组属性源
 	 * Java environment:
 	 * <ul>
 	 * <li>{@value #SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME}

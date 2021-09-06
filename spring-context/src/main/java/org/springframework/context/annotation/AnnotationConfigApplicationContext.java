@@ -90,9 +90,15 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		// 初始化  启动步骤记录 ，  注解的 AnnotatedBeanFefinitionReader 初始化  ClassPathBeanDefinitionScanner初始化
+		//1. 创建beanFactory
+		// 2. 生成 reader
+		//3. 生成 Scanner
 		this();
 		// 注册一个或多个要处理的组件类  Configration 注解的类
+		// 利用reader 把 companentClass 注册为一个BeanDefinition   // 把配置类 BeanDefinition注册到了 beanFactory中
 		register(componentClasses);
+
+		// 启动 ioc 容器的初始化
 		refresh();
 	}
 
@@ -170,6 +176,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		//启动步骤
 		StartupStep registerComponentClass = this.getApplicationStartup().start("spring.context.component-classes.register")
 				.tag("classes", () -> Arrays.toString(componentClasses));
+		// 使用 AnnotatedBeanDefinitionReader 去扫面注册bean
 		this.reader.register(componentClasses);
 		registerComponentClass.end();
 	}
