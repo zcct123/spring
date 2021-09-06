@@ -141,7 +141,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	void setBeanExpressionResolver(@Nullable BeanExpressionResolver resolver);
 
 	/**
-	 * Return the resolution strategy for expressions in bean definition values.
+	 * 返回 bean 定义值中表达式的解析策略.
 	 * @since 3.0
 	 */
 	@Nullable

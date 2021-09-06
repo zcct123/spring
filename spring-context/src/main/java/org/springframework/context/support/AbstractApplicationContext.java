@@ -346,12 +346,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * form, allowing for further customization.
 	 * <p>If none specified, a default environment will be initialized via
 	 * {@link #createEnvironment()}.
+	 *
 	 */
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
 		if (this.environment == null) {
 			this.environment = createEnvironment();
 		}
+		// 可配置环境  初始化一个 环境变量
+		/* 除了ConfigurableEnvironment 属性解析 和 配置文件 相关操作等a的常用功能外，该实现还配置了两个默认属性源，按以下顺序搜索：
+				系统属性
+				系统环境变量 */
 		return this.environment;
 	}
 
@@ -573,7 +578,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareBeanFactory(beanFactory);
 
 			try {
-				// 模板方法   作为后置处理
+				// 模板方法   跟web上下文有关
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
@@ -637,11 +642,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareRefresh() {
 		// 设置beanFactory为活动状态.
-		// 启动时间
+		//  设置启动时间
 		this.startupDate = System.currentTimeMillis();
-		//关闭标志
+		// 设置关闭标志
 		this.closed.set(false);
-		// 活动标志
+		// 设置活动标志
 		this.active.set(true);
 
 		if (logger.isDebugEnabled()) {
@@ -658,11 +663,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
-		// 初始化环境  准备环境对象
+		// 初始化环境  准备环境对象    并且 验证必需的属性
 		getEnvironment().validateRequiredProperties();
 
 
-		// 初始化 应用程序监听器
+		// 初始化 应用程序监听器   以链表的方式存储  ps: 猜想 监听器不需要随机访问，发布事件时也是顺序遍历
 		// 存储预刷新应用程序侦听器...
 		if (this.earlyApplicationListeners == null) {
 			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
@@ -698,7 +703,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		// 刷新bean工厂
+		/**
+		 * 1. cas 操作 防止工厂被重复属性
+		 * 2. 存放序列化 id
+		 */
 		refreshBeanFactory();
+		// 返回一个  可配置 Bean 工厂
 		return getBeanFactory();
 	}
 
@@ -708,20 +718,42 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @param beanFactory the BeanFactory to configure
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-		// 告诉内部 bean 工厂使用上下文的类加载器等.
+		// 告诉内部 bean 工厂使用上下文的类加载器等.  设置 classLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
+		// 是否 忽略SpEL1  即Spring表达式语言
 		if (!shouldIgnoreSpel) {
-			// bean 定义值中表达式的解析策略
+			// Spring3 增加了表达式语言的支持
+			// bean 定义值中表达式的解析策略   设置 Bean 表达式解析器
+			/** 例
+			 * @Value("#{19 - 1}")
+			 * private int age3;
+			 */
 			beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		}
-		//自定义 PropertyEditorRegistrars 应用于此工厂的 bean
+		//自定义 PropertyEditorRegistrars 应用于此工厂的 bean   设置属性注册器
+		// 为 beanFactory 增加一个默认的 propertyEditor，这个主要是对 bean 的属性等设置管理的一个工具
+		/**
+		 * 1. 资源加载器  基础源解析属性
+		 * 2. 属性解析器
+		 * public class UserManager {
+		 *     private Date data;
+		 *     // 省略get/set
+		 * }
+		 * 上面代码中，需要对日期型属性进行注入：
+		 *
+		 * <bean id="userManager" class="UserManager">
+		 *     <property name="data" value="2018-08-01 00:00:00"/>
+		 * </bean>
+		 *  直接 注入就会  类型转换不成功  所以需要属性解析器转换格式
+		 */
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// 使用上下文回调配置 bean 工厂.
-		// bean的后置处理
+		//  ApplicationContextAwareProcessor ，postProcessBeforeInitialization 实际上是委托给了 invokeAwareInterfaces()
+		// 主要为了 后续 bean初始化时 aware 操作  使 bean 感知到 容器的存在
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
-		// 忽略给定的自动装配依赖接口
+		//  设置忽略依赖 不保存在bean容器中
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -730,9 +762,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
 		beanFactory.ignoreDependencyInterface(ApplicationStartupAware.class);
 
-		// BeanFactory interface not registered as resolvable type in a plain factory.
-		// MessageSource registered (and found for autowiring) as a bean.
-		//MessageSource 注册（并发现用于自动装配）作为 bean
+
+		//设置了几个自动装配的特殊规则   简化了底层组件的注入问题
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
@@ -741,7 +772,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// 将用于检测内部 bean 的早期后处理器注册为 ApplicationListeners.
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
-		// 检测 LoadTimeWeaver 并准备编织（如果找到）.
+		// 增加对 AspectJ 的支持
 		if (!NativeDetector.inNativeImage() && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
 
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
@@ -749,7 +780,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// 注册默认环境bean.
+		//  添加 默认的系统环境 bean
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
@@ -775,9 +806,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Instantiate and invoke all registered BeanFactoryPostProcessor beans,
-	 * respecting explicit order if given.
-	 * <p>Must be called before singleton instantiation.
+	  * 实例化并调用所有已注册的 BeanFactoryPostProcessor bean，
+	 * 如果给出，则遵守显式顺序。
+	 * <p>必须在单例实例化之前调用。
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());

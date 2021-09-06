@@ -263,16 +263,18 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	//---------------------------------------------------------------------
 
 	/**
-	 * Do nothing: We hold a single internal BeanFactory and rely on callers
-	 * to register beans through our public methods (or the BeanFactory's).
-	 * @see #registerBeanDefinition
+	 *什么都不做：我们拥有一个内部 BeanFactory
+	 * 并依靠调用者通过我们的公共方法（或 BeanFactory 的）来注册 bean。
+	 * @see registerBeanDefinition
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws IllegalStateException {
+		// 防止多次调用
 		if (!this.refreshed.compareAndSet(false, true)) {
 			throw new IllegalStateException(
 					"GenericApplicationContext does not support multiple refresh attempts: just call 'refresh' once");
 		}
+		// 存放序列化 id
 		this.beanFactory.setSerializationId(getId());
 	}
 
