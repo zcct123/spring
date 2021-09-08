@@ -1,7 +1,6 @@
-package zclvct.plus;
+package zclvct.Processor;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
@@ -9,13 +8,13 @@ import org.springframework.stereotype.Component;
 /**
  * @author zhaochong
  * @version 1.0
- * @description: TODO
- * @date 2021/8/8 19:22
+ * @description: BeanFactoryPostProcessor
+ * @date 2021/9/8 13:14
  */
 
-public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+public class FirstBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		BeanDefinition aa = (BeanDefinition) beanFactory.getBean("aa");
+		System.out.println("FirstBeanDefinitionRegistryPostProcessor: postProcessBeanFactory 运行了");
 	}
 }

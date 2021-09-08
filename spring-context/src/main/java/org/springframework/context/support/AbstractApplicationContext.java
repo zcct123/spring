@@ -540,8 +540,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Return the list of BeanFactoryPostProcessors that will get applied
-	 * to the internal BeanFactory.
+	 *返回将应用于内部 BeanFactory 的 BeanFactoryPostProcessors 列表
 	 */
 	public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors() {
 		return this.beanFactoryPostProcessors;
@@ -574,7 +573,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// 获得一个新的bean工厂.   bean 工厂的初始化   DefaultListableBeanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// 设置bean工厂填充一些属性值.
+			// 设置bean工厂填充一些属性值
 			prepareBeanFactory(beanFactory);
 
 			try {
@@ -583,7 +582,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 
-				//  实例化并调用所有已注册的 BeanFactoryPostProcessor bean
+				//   BeanFactory的后置处理 实例化并调用所有已注册的 BeanFactoryPostProcessor bean
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				//  实例化并注册所有 BeanPostProcessor bean
@@ -806,16 +805,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	  * 实例化并调用所有已注册的 BeanFactoryPostProcessor bean，
-	 * 如果给出，则遵守显式顺序。
-	 * <p>必须在单例实例化之前调用。
+	  * 会实例化和调用所有 BeanFactoryPostProcessor
+	 *   （包括其子类 BeanDefinitionRegistryPostProcessor）
+	 *   BeanFactoryPostProcessor 接口是 Spring 初始化 BeanFactory 时对外暴露的扩展点，
+	 *   Spring IoC 容器允许 BeanFactoryPostProcessor 在容器实例化任何 bean 之前读取 bean 的定义，并可以修改它。
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 委托 AbstractApplicationContext 的后处理器处理。
+		// 1.getBeanFactoryPostProcessors(): 拿到当前应用上下文beanFactoryPostProcessors变量中的值
+		// 2.invokeBeanFactoryPostProcessors: 实例化并调用所有已注册的BeanFactoryPostProcessor
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
-		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
-		// (e.g. through an @Bean method registered by ConfigurationClassPostProcessor)
-		// 检测 LoadTimeWeaver 并准备编织（如果同时发现）
+		// 检测 LoadTimeWeaver 并准备编织，
+		// 如果同时发现（例如，通过 ConfigurationClassPostProcessor 注册的 @Bean 方法）
+
 		if (!NativeDetector.inNativeImage() && beanFactory.getTempClassLoader() == null && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));

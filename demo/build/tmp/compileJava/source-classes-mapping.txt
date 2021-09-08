@@ -18,21 +18,25 @@ zclvct/spring/common/MyStartupStep.java
  zclvct.spring.common.MyStartupStep
  zclvct.spring.common.MyStartupStep$DefaultStartupStep
  zclvct.spring.common.MyStartupStep$DefaultStartupStep$DefaultTags
-zclvct/plus/MyBeanFactoryPostProcessor.java
- zclvct.plus.MyBeanFactoryPostProcessor
+zclvct/spring/Config/TransactionManagerConfig.java
+ zclvct.spring.Config.TransactionManagerConfig
 entity/UserSys.java
  entity.UserSys
+zclvct/spring/Config/DataConfig.java
+ zclvct.spring.Config.DataConfig
+zclvct/plus/MyBeanFactoryPostProcessor.java
+ zclvct.plus.MyBeanFactoryPostProcessor
 zclvct/spring/Config/JDBConfig.java
  zclvct.spring.Config.JDBConfig
+zclvct/spring/serviceimpl/DaoServiceImpl.java
+ zclvct.spring.serviceimpl.DaoServiceImpl
+zclvct/Processor/FirstBeanDefinitionRegistryPostProcessor.java
+ zclvct.Processor.FirstBeanDefinitionRegistryPostProcessor
 zclvct/spring/Main.java
  zclvct.spring.Main
 zclvct/spring/wirteSpring/test.java
  zclvct.spring.wirteSpring.test
-zclvct/spring/Config/DataConfig.java
- zclvct.spring.Config.DataConfig
-zclvct/spring/serviceimpl/DaoServiceImpl.java
- zclvct.spring.serviceimpl.DaoServiceImpl
-zclvct/spring/Config/TransactionManagerConfig.java
- zclvct.spring.Config.TransactionManagerConfig
+zclvct/plus/SpringApplicationContextInitializer.java
+ zclvct.plus.SpringApplicationContextInitializer
 zclvct/spring/Config/AppConfig.java
  zclvct.spring.Config.AppConfig

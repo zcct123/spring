@@ -3,6 +3,7 @@ package zclvct.spring.Config;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import zclvct.Processor.FirstBeanDefinitionRegistryPostProcessor;
 import zclvct.spring.service.OrderService;
 import zclvct.spring.service.UserService;
 import zclvct.spring.serviceimpl.OrderServiceImpls;
@@ -49,4 +50,8 @@ public class AppConfig {
 		return  new OrderServiceImpls();
 	}
 
+	@Bean
+	public FirstBeanDefinitionRegistryPostProcessor firstBeanDefinitionRegistryPostProcessor (){
+		return  new FirstBeanDefinitionRegistryPostProcessor();
+	}
 }
