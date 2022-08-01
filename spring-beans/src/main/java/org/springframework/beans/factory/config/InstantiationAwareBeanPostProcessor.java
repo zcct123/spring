@@ -76,11 +76,10 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
-	 * Perform operations after the bean has been instantiated, via a constructor or factory method,
-	 * but before Spring property population (from explicit properties or autowiring) occurs.
-	 * <p>This is the ideal callback for performing custom field injection on the given bean
-	 * instance, right before Spring's autowiring kicks in.
-	 * <p>The default implementation returns {@code true}.
+	 * 在 bean 被实例化之后，通过构造函数或工厂方法，
+	 * 但在 Spring 属性填充（从显式属性或自动装配）发生之前执行操作。
+	 * <p>这是在 Spring 的自动装配开始之前对给定 bean 实例执行自定义字段注入的理想回调。
+	 * <p>默认实现返回 {@code true}。
 	 * @param bean the bean instance created, with properties not having been set yet
 	 * @param beanName the name of the bean
 	 * @return {@code true} if properties should be set on the bean; {@code false}

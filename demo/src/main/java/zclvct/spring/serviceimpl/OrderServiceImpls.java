@@ -1,7 +1,11 @@
 package zclvct.spring.serviceimpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import zclvct.spring.service.DaoService;
 import zclvct.spring.service.OrderService;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhaochong
@@ -11,6 +15,8 @@ import zclvct.spring.service.OrderService;
  */
 @Service
 public class OrderServiceImpls implements OrderService {
+	@Resource
+	DaoService daoService;
 	@Override
 	public void test() {
 

@@ -920,23 +920,29 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			logger.trace("Pre-instantiating singletons in " + this);
 		}
 
-		// 迭代一个副本以允许 init 方法依次注册新的 bean 定义.
+		// 获取所有bean的名字
 		// beanDefinitionNames 按注册顺序排列的一个 beanDefinition集合
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
 		// 循环 实例化非懒加载的 bean...
 		for (String beanName : beanNames) {
 			// 获取bean的基本信息
-			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			// 过滤非抽象的 而且 不是懒加载的bean
+			// 由此可见，初始化时，使用的统一视图是RootBeanDefinition，这里可以看到spring对于具有继承关系的Bean的处理方式——首先初始化父BeanDefinition，
+			// 接着将子BeanDefinition的内容覆盖父BeanDefinition的内容
+			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName); //合并父类的bean定义
+			// 过滤非抽象的    单例   懒加载
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				//
 				if (isFactoryBean(beanName)) {
-					// 实例化bean
+					// 这里使用getBean（String beanName）方法初始化Bean，我们平常也是通过getBean（String beanName）方法获得我们想要的Bean，
+					//					这两个方法是一样的，为了获得工厂类对象，通常会在工厂类的beanName前添加&符号，基于此，初始化时需要区分工厂类、非工厂类，
+					//					工厂类需要加上&，表示初始化工厂类，而不是获得工厂类生产的对象
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof FactoryBean) {
 						FactoryBean<?> factory = (FactoryBean<?>) bean;
 						boolean isEagerInit;
+						    // 获取系统范围的安全管理器                 // 实现SmartFactoryBean可以指示它们是否总是返回独立实例
+						// 如果工厂类继承了SmartFactoryBean，并且isEagerInit()返回True，则在初始化工厂类之后，立刻初始化产品类
 						if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
 							isEagerInit = AccessController.doPrivileged(
 									(PrivilegedAction<Boolean>) ((SmartFactoryBean<?>) factory)::isEagerInit,
@@ -947,22 +953,26 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 									((SmartFactoryBean<?>) factory).isEagerInit());
 						}
 						if (isEagerInit) {
+							// 注意到这里没有&符号，代表初始化产品类
 							getBean(beanName);
 						}
 					}
 				}
 				else {
+					// 非工厂类无需什么判断，直接初始化
 					getBean(beanName);
 				}
 			}
 		}
 
-		// 为所有适用的 bean 触发初始化后回调...
+		// 在初始化Bean之后，若Bean继承了SmartInitializingSingleton，则调用相应的生命周期回调
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
+			// SmartInitializingSingleton 单例预实例化阶段结束时触发的回调接口
 			if (singletonInstance instanceof SmartInitializingSingleton) {
 				StartupStep smartInitialize = this.getApplicationStartup().start("spring.beans.smart-initialize")
 						.tag("beanName", beanName);
+				// 类型转换
 				SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
 				if (System.getSecurityManager() != null) {
 					AccessController.doPrivileged((PrivilegedAction<Object>) () -> {

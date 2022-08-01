@@ -43,19 +43,17 @@ import java.util.function.Consumer;
 public interface ApplicationListener<E extends ApplicationEvent> extends EventListener {
 
 	/**
-	 * Handle an application event.
-	 * @param event the event to respond to
+	 * 处理应用程序事件。 @param event 要响应的事件
 	 */
 	void onApplicationEvent(E event);
 
 
 	/**
-	 * Create a new {@code ApplicationListener} for the given payload consumer.
-	 * @param consumer the event payload consumer
-	 * @param <T> the type of the event payload
-	 * @return a corresponding {@code ApplicationListener} instance
-	 * @since 5.3
-	 * @see PayloadApplicationEvent
+	 为给定的负载使用者创建一个新的 {@code ApplicationListener}。
+	 @param consumer 事件载荷消费者
+	 @param <T> 事件载荷类型 @return 对应的
+	 {@code ApplicationListener} 实例 @since 5.3
+	 @see PayloadApplicationEvent
 	 */
 	static <T> ApplicationListener<PayloadApplicationEvent<T>> forPayload(Consumer<T> consumer) {
 		return event -> consumer.accept(event.getPayload());

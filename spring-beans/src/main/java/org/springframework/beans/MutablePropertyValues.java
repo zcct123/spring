@@ -62,9 +62,8 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
-	 * Deep copy constructor. Guarantees PropertyValue references
-	 * are independent, although it can't deep copy objects currently
-	 * referenced by individual PropertyValue objects.
+	 * 深拷贝构造函数。保证 PropertyValue 引用是独立的
+	 * 尽管它不能深复制当前由单个 PropertyValue 对象引用的对象。
 	 * @param original the PropertyValues to copy
 	 * @see #addPropertyValues(PropertyValues)
 	 */

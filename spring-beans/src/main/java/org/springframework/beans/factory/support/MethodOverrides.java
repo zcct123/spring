@@ -70,7 +70,7 @@ public class MethodOverrides {
 	}
 
 	/**
-	 * Return all method overrides contained by this object.
+	 * 返回此对象包含的所有方法覆盖.
 	 * @return a Set of MethodOverride objects
 	 * @see MethodOverride
 	 */

@@ -17,21 +17,14 @@
 package org.springframework.validation;
 
 /**
- * A validator for application-specific objects.
- *
- * <p>This interface is totally divorced from any infrastructure
- * or context; that is to say it is not coupled to validating
- * only objects in the web tier, the data-access tier, or the
- * whatever-tier. As such it is amenable to being used in any layer
- * of an application, and supports the encapsulation of validation
- * logic as a first-class citizen in its own right.
- *
- * <p>Find below a simple but complete {@code Validator}
- * implementation, which validates that the various {@link String}
- * properties of a {@code UserLogin} instance are not empty
- * (that is they are not {@code null} and do not consist
- * wholly of whitespace), and that any password that is present is
- * at least {@code 'MINIMUM_PASSWORD_LENGTH'} characters in length.
+ * 应用程序特定对象的验证器。
+ * <p>这个界面完全脱离了任何基础设施或上下文；
+ * 也就是说，它不只验证 Web 层、数据访问层或任何层中的对象。
+ * 因此，它适用于应用程序的任何层，并支持封装验证逻辑作为一等公民。
+ * <p>在下面找到一个简单但完整的 {@code Validator} 实现，
+ * 它验证 {@code UserLogin} 实例的各种 {@link String}
+ * 属性不为空（即它们不是 {@code null} 和不完全由空格组成），
+ * 并且存在的任何密码的长度至少为 {@code 'MINIMUM_PASSWORD_LENGTH'} 个字符
  *
  * <pre class="code"> public class UserLoginValidator implements Validator {
  *
@@ -66,17 +59,15 @@ package org.springframework.validation;
 public interface Validator {
 
 	/**
-	 * Can this {@link Validator} {@link #validate(Object, Errors) validate}
-	 * instances of the supplied {@code clazz}?
-	 * <p>This method is <i>typically</i> implemented like so:
-	 * <pre class="code">return Foo.class.isAssignableFrom(clazz);</pre>
-	 * (Where {@code Foo} is the class (or superclass) of the actual
-	 * object instance that is to be {@link #validate(Object, Errors) validated}.)
-	 * @param clazz the {@link Class} that this {@link Validator} is
-	 * being asked if it can {@link #validate(Object, Errors) validate}
-	 * @return {@code true} if this {@link Validator} can indeed
-	 * {@link #validate(Object, Errors) validate} instances of the
-	 * supplied {@code clazz}
+	 * 这个 {@link Validator} {@link validate(Object, Errors) 可以验证所提供的 {@code clazz} 的实例吗？
+	 * <p>这个方法<i>通常<i>是这样实现的
+	 * ：<pre class="code">return Foo.class.isAssignableFrom(clazz);<pre>
+	 *     （其中{@code Foo}是类（或实际对象实例的超类）
+	 *     {@link validate(Object, Errors) 验证}。）
+	 *     @param clazz {@link 类}，该 {@link Validator}
+	 *     被询问是否可以{@link 验证(Object, Errors) validate}
+	 *     @return {@code true} 如果这个 {@link Validator}
+	 *     确实可以 {@link validate(Object, Errors) validate} 提供的 {@code clazz} 实例
 	 */
 	boolean supports(Class<?> clazz);
 

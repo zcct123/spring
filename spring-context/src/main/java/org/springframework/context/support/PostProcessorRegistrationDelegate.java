@@ -228,34 +228,33 @@ final class PostProcessorRegistrationDelegate {
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
-		// WARNING: Although it may appear that the body of this method can be easily
-		// refactored to avoid the use of multiple loops and multiple lists, the use
-		// of multiple lists and multiple passes over the names of processors is
-		// intentional. We must ensure that we honor the contracts for PriorityOrdered
-		// and Ordered processors. Specifically, we must NOT cause processors to be
-		// instantiated (via getBean() invocations) or registered in the ApplicationContext
-		// in the wrong order.
-		//
-		// Before submitting a pull request (PR) to change this method, please review the
-		// list of all declined PRs involving changes to PostProcessorRegistrationDelegate
-		// to ensure that your proposal does not result in a breaking change:
-		// https://github.com/spring-projects/spring-framework/issues?q=PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status%3A+declined%22
+		// 警告：虽然看起来这个方法的主体可以很容易地重构以避免使用多个循环和多个列表，
+		// 但使用多个列表和多次遍历处理器名称是有意的。
+		// 我们必须确保遵守 PriorityOrdered 和 Ordered 处理器的合同。
+		// 具体来说，我们不能导致处理器被实例化（通过 getBean() 调用）或以错误的顺序在 ApplicationContext 中注册。
+		// 在提交更改此方法的拉取请求 (PR) 之前，
+		// 请查看所有涉及 PostProcessorRegistrationDelegate
+		// 更改的拒绝 PR 列表，
+		// 以确保您的提案不会导致重大更改：https:github.comspring-projectsspring-frameworkissues?q= PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status
+
+
 
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
-		// Register BeanPostProcessorChecker that logs an info message when
-		// a bean is created during BeanPostProcessor instantiation, i.e. when
-		// a bean is not eligible for getting processed by all BeanPostProcessors.
+		// 注册 BeanPostProcessorChecker，
+		// 它会在 BeanPostProcessor 实例化期间创建 bean 时记录信息消息，
+		// 即当 bean 没有资格被所有 BeanPostProcessor 处理时。
+
 		// 在 BeanPostProcessor 实例化期间创建一个 bean，即当一个 bean 没有资格被所有 BeanPostProcessor 处理时。
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
-		// Ordered, and the rest.
-		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
-		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
-		List<String> orderedPostProcessorNames = new ArrayList<>();
-		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
+		// Ordered, and the rest.  四个集合 区分实现不同接口的 BeanPostProcessors
+		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>(); //优先排序后处理器
+		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>(); //内部后处理器
+		List<String> orderedPostProcessorNames = new ArrayList<>();  //有序的后处理器名称
+		List<String> nonOrderedPostProcessorNames = new ArrayList<>(); // 非有序后处理器名称
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
