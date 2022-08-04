@@ -203,7 +203,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowCircularReferences
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 */
+	// // 创建一个ioc 容器
 	protected DefaultListableBeanFactory createBeanFactory() {
+		// 创建 DefaultListableBeanFactory 容器
 		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
 	}
 

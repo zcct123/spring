@@ -140,6 +140,7 @@ public interface BeanFactory {
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the specified name
 	 * @throws BeansException if the bean could not be obtained
 	 */
+	// 通过 beanName 获取bean
 	Object getBean(String name) throws BeansException;
 
 	/**
@@ -304,6 +305,8 @@ public interface BeanFactory {
 	 * @see #getBean
 	 * @see #getType
 	 */
+
+	// 检查具有给定名称的 bean 是否与指定类型匹配
 	boolean isTypeMatch(String name, ResolvableType typeToMatch) throws NoSuchBeanDefinitionException;
 
 	/**

@@ -25,6 +25,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
  * @since 2.5
  * @see org.springframework.context.annotation.Scope
  */
+// 用于解析bean定义范围的策略接口
 @FunctionalInterface
 public interface ScopeMetadataResolver {
 

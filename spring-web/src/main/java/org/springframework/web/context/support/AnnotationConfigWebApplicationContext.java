@@ -149,6 +149,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 	 * @see #setConfigLocation(String)
 	 * @see #refresh()
 	 */
+	// 注册一个或多个要处理的组件类
 	@Override
 	public void register(Class<?>... componentClasses) {
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
@@ -198,17 +199,19 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) {
 		// 获取 BeanDefinitionReader 和  DefinitionScanner
+		// AnnotatedBeanDefinitionReade读取器用来加载class类型的配置
 		AnnotatedBeanDefinitionReader reader = getAnnotatedBeanDefinitionReader(beanFactory);
+		// ClassPathBeanDefinitionScanner是一个扫描指定类路径中注解Bean定义的扫描器
 		ClassPathBeanDefinitionScanner scanner = getClassPathBeanDefinitionScanner(beanFactory);
 
-		// beanName 生成器
+		// 设置 beanName 生成器
 		BeanNameGenerator beanNameGenerator = getBeanNameGenerator();
 		if (beanNameGenerator != null) {
 			reader.setBeanNameGenerator(beanNameGenerator);
 			scanner.setBeanNameGenerator(beanNameGenerator);
 			beanFactory.registerSingleton(AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR, beanNameGenerator);
 		}
-		//  范围元数据解析器  用于检查 bean 上的直接
+		//  ScopeMetadataResolver 用于解析bean定义范围的策略接口
 		ScopeMetadataResolver scopeMetadataResolver = getScopeMetadataResolver();
 		if (scopeMetadataResolver != null) {
 			reader.setScopeMetadataResolver(scopeMetadataResolver);
@@ -230,7 +233,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 			}
 			scanner.scan(StringUtils.toStringArray(this.basePackages));
 		}
-
+		// 用于 xml 配置 这种本地配置的bean 的注册
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			for (String configLocation : configLocations) {

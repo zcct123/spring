@@ -235,7 +235,7 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
-		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
+		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);  // 设置是否懒加载
 		if (lazy != null) {
 			abd.setLazyInit(lazy.getBoolean("value"));
 		}
@@ -246,19 +246,19 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
-		if (metadata.isAnnotated(Primary.class.getName())) {
+		if (metadata.isAnnotated(Primary.class.getName())) { // 设置bean是否优先注入
 			abd.setPrimary(true);
 		}
-		AnnotationAttributes dependsOn = attributesFor(metadata, DependsOn.class);
+		AnnotationAttributes dependsOn = attributesFor(metadata, DependsOn.class); // 依赖的组件会比该组件先注册到IOC容器中。
 		if (dependsOn != null) {
 			abd.setDependsOn(dependsOn.getStringArray("value"));
 		}
 
-		AnnotationAttributes role = attributesFor(metadata, Role.class);
+		AnnotationAttributes role = attributesFor(metadata, Role.class); // 标记bean的角色
 		if (role != null) {
 			abd.setRole(role.getNumber("value").intValue());
 		}
-		AnnotationAttributes description = attributesFor(metadata, Description.class);
+		AnnotationAttributes description = attributesFor(metadata, Description.class); // 增加bean的描述
 		if (description != null) {
 			abd.setDescription(description.getString("value"));
 		}

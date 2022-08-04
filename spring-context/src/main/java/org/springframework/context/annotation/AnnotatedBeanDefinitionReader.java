@@ -48,7 +48,7 @@ import org.springframework.util.Assert;
  */
 public class AnnotatedBeanDefinitionReader {
 
-	  //  保存 beanDefinition 信息
+	  //  保存 beanDefinition 信息 注册BeanDefinition 到registry
 	private final BeanDefinitionRegistry registry;
 
 	 // 策略模式  用于生成 beanName
@@ -255,17 +255,19 @@ public class AnnotatedBeanDefinitionReader {
 	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
-		// 给创建的bean 创建BeanDefinition
+		// 给创建的bean 创建BeanDefinition 并且解析了注解数据
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
+
+		// @Conditional的条件判断
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
 
 		abd.setInstanceSupplier(supplier);
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
-		abd.setScope(scopeMetadata.getScopeName());
-		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
-
+		abd.setScope(scopeMetadata.getScopeName());  // 设置bean的作用域
+		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));  // 生成beanName
+		// 扫描bean 的注解设置相关注解信息
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 
 		// 增加是否为 Primary  Lazy 注解   Qualifier信息
@@ -290,8 +292,9 @@ public class AnnotatedBeanDefinitionReader {
 		// 带有名称和别名的 BeanDefinition 的持有者。可以注册为内部 bean 的占位符
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
 
-		// 判断是否为 代理对象bean
+		// 判断是否为 代理对象bean 定义以那种模式生成代理对象
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+		// 注册到 beanDefinitionRegister
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 

@@ -570,14 +570,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// 准备刷新  .
 			prepareRefresh();
 
-			// 获得一个新的bean工厂.   bean 工厂的初始化   DefaultListableBeanFactory
+			// 在子类中启动refreshBeanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// 设置bean工厂填充一些属性值
 			prepareBeanFactory(beanFactory);
 
 			try {
-				// 模板方法   跟web上下文有关
+				// 设置bean的后置处理
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
@@ -708,6 +708,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		 * 1. cas 操作 防止工厂被重复属性
 		 * 2. 存放序列化 id
 		 */
+		// 重启动容器
 		refreshBeanFactory();
 		// 返回一个  可配置 Bean 工厂
 		return getBeanFactory();
