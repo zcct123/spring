@@ -1,7 +1,9 @@
 package zclvct.spring.Config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import zclvct.Processor.FirstBeanDefinitionRegistryPostProcessor;
 import zclvct.spring.service.OrderService;
@@ -17,7 +19,7 @@ import zclvct.spring.serviceimpl.UserServiceImpl;
  * @createTime:2021/8/3 12:24
  * @version:1.0
  */
-@ComponentScan({"zclvct.spring.aop","zclvct.spring.serviceimpl","zclvct.spring.Config"})
+@ComponentScan({"zclvct.spring.aop","zclvct.spring.serviceimpl","zclvct.spring.Config","zclvct.spring.bffpp"})
 @Configuration
 @EnableAspectJAutoProxy
 @EnableTransactionManagement
@@ -53,5 +55,17 @@ public class AppConfig {
 	@Bean
 	public FirstBeanDefinitionRegistryPostProcessor firstBeanDefinitionRegistryPostProcessor (){
 		return  new FirstBeanDefinitionRegistryPostProcessor();
+	}
+
+	@Bean(name = "messageSource")
+	public MessageSource getMessageSource() {
+
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+
+		messageSource.setDefaultEncoding("UTF-8");
+		messageSource.addBasenames("message", "message_en");
+
+		return messageSource;
+
 	}
 }

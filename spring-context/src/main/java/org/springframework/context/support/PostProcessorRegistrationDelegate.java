@@ -82,7 +82,7 @@ final class PostProcessorRegistrationDelegate {
 			// 保存 注册处理器
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
-			// 遍历 处理器
+			// 遍历 传进来 处理器
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				// 将BeanDefinitionRegistryPostProcessor和普通BeanFactoryPostProcessor区分开
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
@@ -121,7 +121,7 @@ final class PostProcessorRegistrationDelegate {
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			// 添加到registryProcessors(用于最后执行postProcessBeanFactory方法)
 			registryProcessors.addAll(currentRegistryProcessors);
-			// 遍历currentRegistryProcessors, 执行postProcessBeanDefinitionRegistry方法
+			// 遍历currentRegistryProcessors, 执行postProcessBeanDefinitionRegistry方法 这个方法主要用于注册所有的beandefibition
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
 			// 执行完毕后, 清空currentRegistryProcessors
 			currentRegistryProcessors.clear();
@@ -139,7 +139,7 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
 			currentRegistryProcessors.clear();
 
-			// 最后，调用所有其他 BeanDefinitionRegistryPostProcessors 直到不再出现.
+			// 最后，调用所有剩余 BeanDefinitionRegistryPostProcessors
 			boolean reiterate = true;
 			while (reiterate) {
 				reiterate = false;
@@ -238,15 +238,17 @@ final class PostProcessorRegistrationDelegate {
 		// 以确保您的提案不会导致重大更改：https:github.comspring-projectsspring-frameworkissues?q= PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status
 
 
-
+		// 从容器中获取所有 BeanPostProcessor类型的beanName
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// 注册 BeanPostProcessorChecker，
 		// 它会在 BeanPostProcessor 实例化期间创建 bean 时记录信息消息，
 		// 即当 bean 没有资格被所有 BeanPostProcessor 处理时。
-
 		// 在 BeanPostProcessor 实例化期间创建一个 bean，即当一个 bean 没有资格被所有 BeanPostProcessor 处理时。
+
+		// beanProcessorTargetCount 用于目标计数
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
+		// BeanPostProcessorChecker 主要用于 BeanPostProcessor实例化 创建是记录信息
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
@@ -287,7 +289,6 @@ final class PostProcessorRegistrationDelegate {
 		sortPostProcessors(orderedPostProcessors, beanFactory);
 		registerBeanPostProcessors(beanFactory, orderedPostProcessors);
 
-		// Now, register all regular BeanPostProcessors.
 		//现在，注册所有常规 BeanPostProcessors
 		List<BeanPostProcessor> nonOrderedPostProcessors = new ArrayList<>(nonOrderedPostProcessorNames.size());
 		for (String ppName : nonOrderedPostProcessorNames) {

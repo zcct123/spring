@@ -719,6 +719,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * such as the context's ClassLoader and post-processors.
 	 * @param beanFactory the BeanFactory to configure
 	 */
+	// 配置bean工厂的上下文环境，例如 ClassLoader 和 post-processors.
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// 告诉内部 bean 工厂使用上下文的类加载器等.  设置 classLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
@@ -804,6 +805,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * BeanPostProcessors etc in certain ApplicationContext implementations.
 	 * @param beanFactory the bean factory used by the application context
 	 */
+
+	//	根据应用程序上下文的标准修改其内部bean工厂初始化。所有bean定义都已加载，但没有bean将被实例化。这允许注册特殊用户某些ApplicationContext实现中的BeanPostProcessor等。
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 	}
 
