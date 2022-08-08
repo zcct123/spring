@@ -1,6 +1,7 @@
 package zclvct.spring.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,8 +20,19 @@ import java.util.Map;
 @Repository
 public class DaoServiceImpl  implements DaoService {
 
-	@Resource
-	JdbcTemplate jdbcTemplate;
+	@Value("${server.address }")
+	private String address;
+
+	@Value("${server.port }")
+	private String port;
+
+	//@Resource
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	@Autowired
 	DaoService daoService;

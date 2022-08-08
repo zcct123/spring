@@ -282,6 +282,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			 * 2.进行了子类父类的合并，并把存储xml配置的GernericBeanDefinition转换为RootBeanDefinition；
 			 * 3.真正核心是调用了getObjectFromFactoryBean这个方法。
 			 */
+			//使用 getObjectForBeanInstance 完成的是FactoryBean的相关处理，已取得FactoryBean的生产结果。
 			beanInstance = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
@@ -291,8 +292,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
-			// 检查此工厂中是否存在 bean 定义.
-			//  获取父BeanFactory,一般情况下,父BeanFactory为null,如果存在父BeanFactory,就先去父级容器去查找
+			//  对Ioc 容器中的 BeanDefition 是否存在进行检查，检查是否能在当前的BeanFactory中获取到Bean，
+			//  如果在当前工厂中取不到，则到双亲BeanFactory中去取，如果双亲中娶不到，那就顺着双亲beanFactory链一直向上寻找
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// 利用父工厂去 创建 bean
@@ -314,6 +315,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
+			// 判断调用getBean()是否仅仅是为了类型检查获取bean，如果是为了创建bean，则先清除掉合并BeanDefinition的标记（使之重新合并)
 			if (!typeCheckOnly) {
 				markBeanAsCreated(beanName);
 			}
@@ -353,10 +355,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// 创建bean实例.
 				if (mbd.isSingleton()) {
-					//  函数式编程    ObjectFactory<?> singletonFactory  。getObject() 方法
+					//  函数式编程    ObjectFactory<?> singletonFactory.getObject() 方法
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
-							// 创建对象
+							// 创建对象 这里 通过三级缓存解决了循环依赖
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {
@@ -419,7 +421,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				beanCreation.end();
 			}
 		}
-
+		// 最后 对创建的bean 进行类型检查，如果没有问题，就返回这个新创建的Bean，这个Bean已经是包含了依赖关系的bean
 		return adaptBeanInstance(name, beanInstance, requiredType);
 	}
 
@@ -1185,6 +1187,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * (within the current thread).
 	 * @param beanName the name of the bean
 	 */
+	// 返回指定的原型bean当前是否正在创建中
 	protected boolean isPrototypeCurrentlyInCreation(String beanName) {
 		Object curVal = this.prototypesCurrentlyInCreation.get();
 		return (curVal != null &&
@@ -1945,6 +1948,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see AbstractBeanDefinition#getDestroyMethodName()
 	 * @see org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor
 	 */
+	// 确定给定bean是否需要在关闭时销毁。
 	protected boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
 		return (bean.getClass() != NullBean.class && (DisposableBeanAdapter.hasDestroyMethod(bean, mbd) ||
 				(hasDestructionAwareBeanPostProcessors() && DisposableBeanAdapter.hasApplicableProcessors(
@@ -1965,16 +1969,24 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	protected void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd) {
 		AccessControlContext acc = (System.getSecurityManager() != null ? getAccessControlContext() : null);
+
+		//判断 bean 不是原型 并且 有销毁方法
 		if (!mbd.isPrototype() && requiresDestruction(bean, mbd)) {
+			// 如果是单例 bean 在bean工厂中注册销毁回调
 			if (mbd.isSingleton()) {
 				// Register a DisposableBean implementation that performs all destruction
 				// work for the given bean: DestructionAwareBeanPostProcessors,
 				// DisposableBean interface, custom destroy method.
+
+				//注册执行所有销毁的DisposableBean实现
+				//为给定bean工作：DestructionAwareBeanPostProcessors，
+				//DisposableBean接口，自定义销毁方法。
 				registerDisposableBean(beanName, new DisposableBeanAdapter(
 						bean, beanName, mbd, getBeanPostProcessorCache().destructionAware, acc));
 			}
 			else {
 				// A bean with a custom scope...
+				// 如果不是单例的 注册回调到他们的各自的 scope
 				Scope scope = this.scopes.get(mbd.getScope());
 				if (scope == null) {
 					throw new IllegalStateException("No Scope registered for scope name '" + mbd.getScope() + "'");

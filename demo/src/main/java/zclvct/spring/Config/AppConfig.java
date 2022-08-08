@@ -19,7 +19,7 @@ import zclvct.spring.serviceimpl.UserServiceImpl;
  * @createTime:2021/8/3 12:24
  * @version:1.0
  */
-@ComponentScan({"zclvct.spring.aop","zclvct.spring.serviceimpl","zclvct.spring.Config","zclvct.spring.bffpp"})
+@ComponentScan({"zclvct.spring.aop","zclvct.spring.*"})
 @Configuration
 @EnableAspectJAutoProxy
 @EnableTransactionManagement

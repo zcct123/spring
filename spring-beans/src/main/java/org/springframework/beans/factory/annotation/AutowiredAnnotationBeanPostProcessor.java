@@ -394,7 +394,16 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+
+		/**
+		 * 获取所有待注入的元素：
+		 * 这些元素是在 postProcessMergedBeanDefinition 阶段被收集起来的
+		 */
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
+
+		/**
+		 * 进行元素注入
+		 */
 		try {
 			metadata.inject(bean, beanName, pvs);
 		}

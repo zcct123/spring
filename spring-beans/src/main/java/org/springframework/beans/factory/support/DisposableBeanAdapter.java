@@ -107,10 +107,16 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 				(this.bean instanceof DisposableBean && !beanDefinition.isExternallyManagedDestroyMethod("destroy"));
 		this.nonPublicAccessAllowed = beanDefinition.isNonPublicAccessAllowed();
 		this.acc = acc;
+		// 对destroyMethodName进行推断
 		String destroyMethodName = inferDestroyMethodIfNecessary(bean, beanDefinition);
+
+		// 1、推断结果不为空
+		// 2、invokeDisposableBean为false，或者destroyMethodName = destroy
+		// 3、保存的回调方法名不存在 destroyMethodName
 		if (destroyMethodName != null && !(this.invokeDisposableBean && "destroy".equals(destroyMethodName)) &&
 				!beanDefinition.isExternallyManagedDestroyMethod(destroyMethodName)) {
 			this.destroyMethodName = destroyMethodName;
+			// 通过destroyMethodName获取到对应的method
 			Method destroyMethod = determineDestroyMethod(destroyMethodName);
 			if (destroyMethod == null) {
 				if (beanDefinition.isEnforceDestroyMethod()) {
@@ -121,10 +127,12 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 			else {
 				if (destroyMethod.getParameterCount() > 0) {
 					Class<?>[] paramTypes = destroyMethod.getParameterTypes();
+					// 销毁方法参数个数不能多于1个
 					if (paramTypes.length > 1) {
 						throw new BeanDefinitionValidationException("Method '" + destroyMethodName + "' of bean '" +
 								beanName + "' has more than one parameter - not supported as destroy method");
 					}
+					// 销毁方法的唯一参数只能是boolean类型
 					else if (paramTypes.length == 1 && boolean.class != paramTypes[0]) {
 						throw new BeanDefinitionValidationException("Method '" + destroyMethodName + "' of bean '" +
 								beanName + "' has a non-boolean parameter - not supported as destroy method");
@@ -134,6 +142,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 			}
 			this.destroyMethod = destroyMethod;
 		}
+		// 从postProcessors查找到所有适用于bean的销毁processors
 		this.beanPostProcessors = filterPostProcessors(postProcessors, bean);
 	}
 

@@ -44,6 +44,15 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#setCustomTargetSourceCreators
  * @see org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator
  */
+
+//｛@link BeanPostProcessor｝的子接口，该子接口添加了一个实例化前回调，
+//		*以及在实例化之后但在显式属性设置之前的回调，或者
+//		*自动布线发生。
+//		*
+//		*<p>通常用于抑制特定目标bean的默认实例化，
+//		*例如，创建具有特殊TargetSources的代理（池目标，
+//		*延迟初始化目标等）或实施附加注入策略
+//		*例如场注入。
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**
@@ -70,6 +79,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * @see org.springframework.beans.factory.support.AbstractBeanDefinition#getBeanClass()
 	 * @see org.springframework.beans.factory.support.AbstractBeanDefinition#getFactoryMethodName()
 	 */
+	// bean 实例化后的操作
 	@Nullable
 	default Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		return null;

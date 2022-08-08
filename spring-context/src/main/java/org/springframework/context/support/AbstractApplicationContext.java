@@ -679,8 +679,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			this.applicationListeners.addAll(this.earlyApplicationListeners);
 		}
 
-		// Allow for the collection of early ApplicationEvents,
-		// to be published once the multicaster is available...
+		// 允许收集早期ApplicationEvents
+		// 将在multicaster可用后发布。。。
 		// 创建多播list
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
@@ -951,7 +951,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void registerListeners() {
 		// 首先注册静态指定的侦听器。   手动放入的 listener
 		for (ApplicationListener<?> listener : getApplicationListeners()) {
-			// 将监听器 放入多播事件中
+			//
 			getApplicationEventMulticaster().addApplicationListener(listener);
 		}
 

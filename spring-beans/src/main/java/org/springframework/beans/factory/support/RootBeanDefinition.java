@@ -52,6 +52,8 @@ import org.springframework.util.Assert;
  * @see ChildBeanDefinition
  */
 @SuppressWarnings("serial")
+
+//统一”bean定义视图。
 public class RootBeanDefinition extends AbstractBeanDefinition {
 
 	@Nullable
@@ -121,6 +123,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	private Set<Member> externallyManagedConfigMembers;
 
+
+	// InitializingBean中 的 init 回调函数名 afterPropertiesSet 会在这里记录，以便进行生命周期回调
 	@Nullable
 	private Set<String> externallyManagedInitMethods;
 
