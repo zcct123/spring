@@ -36,18 +36,21 @@ public interface Pointcut {
 	 * Return the ClassFilter for this pointcut.
 	 * @return the ClassFilter (never {@code null})
 	 */
+	// 返回此切入点的类过滤器
 	ClassFilter getClassFilter();
 
 	/**
 	 * Return the MethodMatcher for this pointcut.
 	 * @return the MethodMatcher (never {@code null})
 	 */
+	// 为该切入点返回MethodMatcher。用来判断当前方法是否需要增强
 	MethodMatcher getMethodMatcher();
 
 
 	/**
 	 * Canonical Pointcut instance that always matches.
 	 */
+	// 始终匹配的规范切入点实例。
 	Pointcut TRUE = TruePointcut.INSTANCE;
 
 }

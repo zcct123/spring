@@ -30,6 +30,7 @@ public class CountingBeforeAdvice extends MethodCounter implements MethodBeforeA
 
 	@Override
 	public void before(Method m, Object[] args, Object target) throws Throwable {
+		// 统计被调用方法的次数
 		count(m);
 	}
 

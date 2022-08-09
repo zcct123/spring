@@ -31,6 +31,7 @@ import java.util.HashMap;
 public class MethodCounter implements Serializable {
 
 	/** Method name --> count, does not understand overloading */
+	// 方法名和调用次数的键值对
 	private HashMap<String, Integer> map = new HashMap<>();
 
 	private int allCount;

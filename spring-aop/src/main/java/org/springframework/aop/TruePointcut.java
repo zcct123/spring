@@ -23,6 +23,7 @@ import java.io.Serializable;
  *
  * @author Rod Johnson
  */
+//始终匹配的规范切入点实例。
 @SuppressWarnings("serial")
 final class TruePointcut implements Pointcut, Serializable {
 
