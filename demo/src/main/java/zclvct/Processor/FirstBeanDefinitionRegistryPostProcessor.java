@@ -6,7 +6,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * @author zhaochong
+ * @author zcct
  * @version 1.0
  * @description: BeanFactoryPostProcessor
  * @date 2021/9/8 13:14

@@ -3,7 +3,7 @@ package zclvct.spring.event;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * @author zhaochong
+ * @author zcct
  * @version 1.0
  * @description: TODO
  * @date 2022/8/6 12:56
