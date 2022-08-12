@@ -28,6 +28,7 @@ import org.springframework.aop.Advisor;
  * @author Rod Johnson
  * @author Rob Harrop
  */
+// Advisor适配器注册表的接口。
 public interface AdvisorAdapterRegistry {
 
 	/**

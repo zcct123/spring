@@ -57,5 +57,7 @@ public class Main {
 
 		MyPublisher myPublisher = (MyPublisher)applicationContext.getBean("myPublisher");
 		myPublisher.doPublisher("今天晚上吃啥");
+		UserService bean = applicationContext.getBean(UserService.class);
+		bean.test();
 	}
 }

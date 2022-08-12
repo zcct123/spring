@@ -334,6 +334,7 @@ public abstract class AopUtils {
 	 * @throws Throwable if thrown by the target method
 	 * @throws org.springframework.aop.AopInvocationException in case of a reflection error
 	 */
+	// 作为AOP方法调用的一部分，通过反射调用给定目标。
 	@Nullable
 	public static Object invokeJoinpointUsingReflection(@Nullable Object target, Method method, Object[] args)
 			throws Throwable {

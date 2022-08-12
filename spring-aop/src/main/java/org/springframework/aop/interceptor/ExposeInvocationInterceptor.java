@@ -57,7 +57,7 @@ public final class ExposeInvocationInterceptor implements MethodInterceptor, Pri
 			return ExposeInvocationInterceptor.class.getName() +".ADVISOR";
 		}
 	};
-
+	// 他维护了 一个 ThreadLocal 对象 用于保存 MethodInvocation 的上下文
 	private static final ThreadLocal<MethodInvocation> invocation =
 			new NamedThreadLocal<>("Current AOP method invocation");
 
